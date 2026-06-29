@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Chuyên Anh (51-100) - Ms Lê Hằng English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #8E44AD;
+            --secondary-color: #F1C40F;
+            --accent-color: #1ABC9C;
+            --correct-color: #2ECC71;
+            --correct-shadow: #27AE60;
+            --wrong-color: #E74C3C;
+            --wrong-shadow: #C0392B;
+            --text-color: #2C3E50;
+            --card-bg: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; font-family: 'Nunito', 'Quicksand', sans-serif; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(-45deg, #8E44AD, #F1C40F, #1ABC9C, #E74C3C);
+            background-size: 400% 400%;
+            animation: moveGradient 15s ease infinite;
+            min-height: 100vh; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+        .progress-box { width: 100%; max-width: 720px; background: rgba(255, 255, 255, 0.35); height: 14px; border-radius: 10px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: var(--accent-color); transition: width 0.3s ease; }
+        .quiz-container { width: 100%; max-width: 720px; }
+
+        .card-item {
+            background: var(--card-bg); border-radius: 20px; padding: 22px; margin-bottom: 20px;
+            box-shadow: 0 8px 0px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.05); border: 2px solid #E2E8F0;
+        }
+
+        .card-title { font-size: 1.1rem; font-weight: 800; color: var(--text-color); line-height: 1.5; margin-bottom: 15px; }
+        .card-index { background: var(--primary-color); color: white; padding: 2px 10px; border-radius: 8px; font-size: 0.85rem; margin-right: 8px; }
+        .options-box { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+        .option-node {
+            background: #FFFFFF; border: 2px solid #E2E8F0; border-bottom: 5px solid #CBD5E1;
+            border-radius: 14px; padding: 12px 15px; font-size: 1rem; font-weight: 700;
+            text-align: left; cursor: pointer; transition: all 0.1s ease; color: var(--text-color);
+        }
+
+        .option-node:hover:not(.locked) { transform: translateY(-2px); border-bottom-width: 7px; background: #F8FAFC; }
+        .option-node:active:not(.locked) { transform: translateY(3px); border-bottom-width: 2px; }
+        
+        .option-node.correct-state { background: var(--correct-color) !important; color: white; border-color: var(--correct-shadow); border-bottom-width: 2px; transform: translateY(3px); }
+        .option-node.wrong-state { background: var(--wrong-color) !important; color: white; border-color: var(--wrong-shadow); border-bottom-width: 2px; transform: translateY(3px); }
+        .locked { pointer-events: none; opacity: 0.6; } .locked.correct-state, .locked.wrong-state { opacity: 1; }
+
+        .exp-container { margin-top: 15px; background: #F0FDF4; border: 2px solid #DCFCE7; border-radius: 12px; padding: 14px; display: none; }
+        .exp-container.active { display: block; }
+        .exp-row { font-size: 0.9rem; color: #1E293B; margin-bottom: 4px; line-height: 1.5; }
+
+        .btn-submit { background: #1ABC9C; color: white; border: none; border-bottom: 5px solid #16a085; padding: 15px; font-size: 1.2rem; font-weight: 800; border-radius: 15px; width: 100%; cursor: pointer; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+    <div class="progress-box"><div class="progress-fill" id="bar-fill"></div></div>
+    <div class="quiz-container" id="quiz-box"></div>
+    <div class="quiz-container"><button class="btn-submit" onclick="showScore()">🎉 NỘP BÀI XEM KẾT QUẢ 🎉</button></div>
+
+    <script>
+        const quizData = [
+            { id: 51, q: "Carbon emissions from airplanes and other pollutants _______ to global warming.", o: ["attribute", "stem", "contribute", "spark"], c: "contribute", e: ["Khí thải carbon từ máy bay và các chất ô nhiễm khác góp phần vào sự nóng lên toàn cầu.", "A. quy cho; B. bắt nguồn từ (stem from); C. góp phần (contribute to); D. khơi mào", "Cấu trúc: 'contribute to sth/V-ing' mang nghĩa góp phần gây ra việc gì.", "Các từ khác không đi với giới từ 'to' phù hợp ý nghĩa này."] },
+            { id: 52, q: "He was _______ with bribery after she offered to pay the policeman a sum of money to overlook the offence.", o: ["charged", "accused", "sued", "suspected"], c: "charged", e: ["Anh ta bị cáo buộc tội hối lộ sau khi cô ta đề nghị trả tiền cho cảnh sát...", "A. bị cáo buộc hình sự; B. bị buộc tội lỗi; C. bị kiện; D. bị nghi ngờ", "Cấu trúc pháp lý hình sự: 'be charged with sth' (bị buộc tội danh gì).", "Accuse đi với 'of'. Sue đi với 'for'. Suspect đi với 'of'."] },
+            { id: 53, q: "Some endurance events may be rescheduled if such high pollution levels _______ a health risk to most athletes.", o: ["create", "present", "run", "face"], c: "present", e: ["Một số sự kiện sức bền có thể bị hoãn lại nếu mức độ ô nhiễm cao như vậy gây ra rủi ro sức khỏe...", "Cần động từ đi với 'risk' tạo thành cụm collocation tự nhiên.", "Cụm từ cố định: 'present a risk/hazard' nghĩa là mang lại, đặt ra, gây ra mối rủi ro.", "Create rủi ro nghe không tự nhiên bằng present trong văn phong khoa học Chuyên Anh."] },
+            { id: 54, q: "Improving the overall environmental quality is a long-term battle in which we do want the participation of everyone in society in order to _______ results.", o: ["realize", "reap", "bear", "generate"], c: "reap", e: ["Cải thiện chất lượng môi trường là trận chiến lâu dài cần sự tham gia của mọi người để gặt hái kết quả.", "A. nhận ra; B. gặt hái (thành quả); C. sinh lòng/chịu đựng; D. tạo ra phát điện", "Cụm Collocation cố định đi với kết quả tích cực: 'reap results/rewards/benefits'.", "Bear đi với fruit (bear fruit - đơm hoa kết trái)."] },
+            { id: 55, q: "Hundreds of people in the hardest-hit zone are at _______ from disease unless a tsunami-like aid effort is mobilized.", o: ["threat", "menace", "risk", "danger"], c: "risk", e: ["Hàng trăm người trong vùng chịu ảnh hưởng nặng nề nhất đang có nguy cơ mắc bệnh...", "Dựa vào giới từ 'from' phía sau chỗ trống.", "Cấu trúc cố định: 'at risk from sth' (có nguy cơ, gặp rủi ro trước cái gì).", "At threat đi với 'of'. In danger of. Under menace."] },
+            { id: 56, q: "The result is impossible to predict with any degree of _______.", o: ["certainty", "assurance", "insurance", "probability"], c: "certainty", e: ["Kết quả là không thể dự đoán được với bất kỳ mức độ chắc chắn nào.", "A. sự chắc chắn; B. sự đảm bảo; C. bảo hiểm; D. xác suất toán học", "Cụm từ cố định: 'degree of certainty' khao sát mức độ chính xác, chắc chắn của thông tin.", "Assurance thiên về sự cam kết đảm bảo từ con người."] },
+            { id: 57, q: "Parents play a _______ role in a child’s upbringing in the formative years.", o: ["supporting", "crucial", "starring", "title"], c: "crucial", e: ["Cha mẹ đóng một vai trò quyết định/then chốt trong việc nuôi dạy con cái những năm đầu đời.", "A. phụ trợ; B. quyết định, cốt lõi; C. vai chính (phim); D. tiêu đề", "Cụm từ trọng tâm: 'play a crucial/vital role in sth' (đóng vai trò quan trọng, then chốt).", "Supporting role là vai phụ (ngược nghĩa ngữ cảnh)."] },
+            { id: 58, q: "With three days to _______ before the high school graduation examination, he had to digest such a lot of facts.", o: ["go", "come", "remain", "spare"], c: "go", e: ["Chỉ còn 3 ngày nữa là đến kỳ thi tốt nghiệp trung học phổ thông...", "Cấu trúc đếm ngược thời gian quen thuộc trong tiếng Anh.", "Công thức: 'Time + to go' nghĩa là còn lại bao nhiêu thời gian nữa là đến sự kiện.", "Remain không đứng sau 'to' bổ nghĩa kiểu này. To spare nghĩa là dư thừa."] },
+            { id: 59, q: "Television came into _______ and became a competitor with the motion pictures.", o: ["practice", "enforcement", "use", "life"], c: "use", e: ["Truyền hình bắt đầu được đưa vào sử dụng và trở thành đối thủ cạnh tranh với điện ảnh.", "Cụm động từ chỉ trạng thái đồ vật bắt đầu hoạt động.", "Cụm cố định: 'come into use' (bắt đầu được sử dụng).", "Come into force/enforcement dùng cho luật pháp có hiệu lực. Come to life là tỉnh lại."] },
+            { id: 60, q: "It’s a matter of life and death. As a consequence, we will give it serious _______.", o: ["review", "thoughts", "opinions", "consideration"], c: "consideration", e: ["Đây là vấn đề sống còn. Do đó, chúng tôi sẽ cân nhắc nó một cách cực kỳ nghiêm túc.", "Cần danh từ kết hợp với 'give sth'.", "Cụm từ cố định: 'give sth serious consideration' = xem xét, cân nhắc kỹ lưỡng việc gì.", "Give thoughts cần dùng số ít và giới từ 'to' cụ thể hơn."] },
+            { id: 61, q: "Without _______, natural resources will be used up within a hundred years.", o: ["preservation", "maintenance", "conservation", "protection"], c: "conservation", e: ["Nếu không có sự bảo tồn, tài nguyên thiên nhiên sẽ bị cạn kiệt trong vòng một trăm năm.", "Phân biệt khái niệm bảo tồn bảo vệ môi trường tự nhiên.", "'conservation' dùng riêng cho việc bảo tồn, giữ gìn hệ sinh thái, tài nguyên thiên nhiên.", "Preservation dùng cho thực phẩm, hiện vật lịch sử hoặc kiến trúc cổ."] },
+            { id: 62, q: "Taking photographs in this world renowned museum is _______ forbidden.", o: ["absolutely", "highly", "seriously", "strictly"], c: "strictly", e: ["Việc chụp ảnh trong bảo tàng nổi tiếng thế giới này bị nghiêm cấm.", "Cần một trạng từ bổ trợ mạnh cho từ cấm 'forbidden'.", "Cụm Collocation kinh điển: 'strictly forbidden' (bị nghiêm cấm một cách ngặt nghèo).", "Highly đi với recommended. Seriously đi với injured."] },
+            { id: 63, q: "The government stopped the local companies from importing fake milk powder _______ of public health.", o: ["in the interest", "to the best", "for the attention", "on the safe side"], c: "in the interest", e: ["Chính phủ ngăn chặn các công ty nhập khẩu sữa bột giả vì lợi ích của sức khỏe cộng đồng.", "Cụm từ cố định mang nghĩa vì quyền lợi của mục tiêu gì.", "Cấu trúc: 'in the interest(s) of sth' (vì lợi ích, sự an toàn của cái gì).", "Các cụm khác không ghép được cấu trúc với giới từ 'of'."] },
+            { id: 64, q: "_______ the hard evidence against him, the jury had no option but to find him guilty.", o: ["Given that", "In view of", "In regard to", "With a view to"], c: "In view of", e: ["Xét thấy bằng chứng đanh thép chống lại anh ta, bồi thẩm đoàn không còn lựa chọn nào khác ngoài việc tuyên án có tội.", "A. Giả sử rằng; B. Xét thấy/Bởi vì; C. Về mặt; D. Với mục đích làm gì", "Cụm từ: 'In view of sth' = 'Considering sth' dùng chỉ nguyên do rõ ràng trước mắt.", "Given that yêu cầu đi kèm một mệnh đề hoàn chỉnh (ở đây là cụm danh từ)."] },
+            { id: 65, q: "Those ballpoint pens are made in a large _______ of colors and styles.", o: ["series", "range", "collection", "network"], c: "range", e: ["Những chiếc bút bi đó được sản xuất với đủ loại màu sắc và kiểu dáng.", "Cụm từ chỉ sự đa dạng phong phú của sản phẩm thương mại.", "Cấu trúc cố định: 'a wide/large range of sth' (một chuỗi đa dạng các loại cái gì).", "Series là chuỗi tập phim/chuỗi sự kiện tuần tự."] },
+            { id: 66, q: "He promised me an Oxford dictionary and to my great joy, he _______ his word.", o: ["stood by", "stuck at", "went back on", "held onto"], c: "stood by", e: ["Anh ấy hứa tặng tôi từ điển và thật vui mừng là anh ấy đã giữ lời.", "A. giữ lời hứa/ủng hộ; B. kiên trì; C. nuốt lời; D. níu giữ lấy", "Cụm động từ: 'stand by one's word' = giữ đúng lời hứa ban đầu.", "Vế trước mang ý tích cực 'to my great joy' nên không thể dùng nuốt lời 'went back on'."] },
+            { id: 67, q: "The development of laser use is a major _______ in medicine.", o: ["breakaway", "breakup", "break-in", "breakthrough"], c: "breakthrough", e: ["Sự phát triển của việc sử dụng laser là một bước đột phá lớn trong y học.", "A. sự ly khai; B. chia tay/tan rã; C. vụ đột nhập; D. bước đột phá", "Danh từ chỉ một phát kiến, thành tựu làm thay đổi cục diện: 'breakthrough'.", "Các phương án khác thuộc phạm trù ngữ nghĩa tiêu cực phá hoại."] },
+            { id: 68, q: "Don’t be _______ by misleading advertisements.", o: ["fooled around", "taken in", "put out", "seen through"], c: "taken in", e: ["Đừng bị lừa gạt bởi những quảng cáo sai sự thật.", "Câu ở thể bị động mang nghĩa bị lừa bịp.", "Phrasal verb: 'be taken in' = bị lừa gạt, bị lừa phỉnh dắt mũi bởi ai/cái gì.", "Fool around là chơi lêu lổng. See through là nhìn thấu tim đen."] },
+            { id: 69, q: "The management team came _______ criticism for the way they handled the situation.", o: ["in for", "up with", "down with", "up against"], c: "in for", e: ["Ban quản lý đã hứng chịu làn sóng chỉ trích vì cách họ xử lý tình huống.", "A. hứng chịu (gạch đá/chỉ trích); B. nảy ý tưởng; C. bị bệnh; D. đối mặt trở ngại", "Cụm động từ cố định: 'come in for criticism' (nhận lấy, hứng chịu sự phê bình, chỉ trích).", "Đây là collocation siêu trọng tâm đề thi Chuyên Anh."] },
+            { id: 70, q: "We are running out _______ petrol so we’ll have to stop at the next filling station.", o: ["of", "off", "by", "in"], c: "of", e: ["Chúng tôi đang cạn kiệt xăng rồi nên phải dừng ở trạm tiếp nhiên liệu tiếp theo.", "Cấu trúc phrasal verb chỉ sự hết sạch tài nguyên.", "Công thức: 'run out of sth' (cạn kiệt, hết sạch cái gì).", "Nếu không có danh từ petrol phía sau thì mới dùng dừng lại ở 'running out'."] },
+            { id: 71, q: "Pete: 'Let me pay for the meal.' - Margaret: '_______.'", o: ["It’s on me", "It’s my round", "I’ll make it", "Never remind me"], c: "It’s my round", e: ["Pete: 'Để tôi trả tiền bữa ăn.' - Margaret: 'Đến lượt tôi bao mà.'", "A. Để tôi bao (Pete đã nói câu này trước nên Margaret nói lại câu này sẽ bị trùng); B. Đến lượt tôi trả tiền vòng này; C. Tôi sẽ thành công; D. Đừng nhắc lại.", "Cụm 'It's my round' dùng phổ biến khi đi ăn uống theo nhóm, chỉ lượt trả tiền của mình.", "Vì Pete đã đòi trả, Margaret muốn ngăn lại để cô ấy trả nên bảo đến lượt cô ấy."] },
+            { id: 72, q: "Pete: 'If you ask me, action movies are great.' - Margaret: '_______.'", o: ["You can say that again!", "Never mind!", "That’s that.", "Sure. It’s my pleasure."], c: "You can say that again!", e: ["Pete: 'Theo tôi thì phim hành động rất tuyệt.' - Margaret: 'Bạn nói quá chuẩn luôn!'", "A. Hoàn toàn đồng ý; B. Đừng bận tâm; C. Thế là xong; D. Niềm vinh hạnh của tôi.", "Thành ngữ giao tiếp dùng để thể hiện sự đồng tình quan điểm tuyệt đối: 'You can say that again!'."] },
+            { id: 73, q: "Pete: 'What a fantastic cook you are, Margaret!' - Margaret: '_______.'", o: ["Sorry, I don’t think so", "No, no, it’s not true", "It’s kind of you to say so", "I’d prefer it"], c: "It’s kind of you to say so", e: ["Pete: 'Cậu là một đầu bếp tuyệt vời đấy Margaret!' - Margaret: 'Cậu thật tốt khi khen như vậy.'", "Mẫu câu lịch sự chuẩn mực nhất để đáp lại một lời khen ngợi từ đối phương.", "Cấu trúc: 'It's kind/nice of you to say so'.", "Các phương án A và B quá thô lỗ hoặc phủ nhận thiếu tự nhiên."] },
+            { id: 74, q: "My mother has a _______ for a bargain.", o: ["big nose", "fast foot", "good eye", "keen sense"], c: "good eye", e: ["Mẹ tôi có con mắt tinh tường trong việc săn hàng giá rẻ.", "Thành ngữ chỉ khả năng nhìn ra đồ tốt, đồ rẻ có giá trị.", "Idiom cố định: 'have a good eye for sth' (có mắt nhìn tinh tường về cái gì).", "Keen sense thường đi với giới từ 'of' (keen sense of smell/humor)."] },
+            { id: 75, q: "One can’t help _______ compassion for the people who lost their homes in the earthquake.", o: ["to feel", "but feel", "from feeling", "in feeling"], c: "but feel", e: ["Người ta không thể không cảm thấy thương xót cho những người mất nhà cửa trong trận động đất.", "Cấu trúc đặc biệt của động từ help mang nghĩa kìm nén.", "Công thức: 'cannot help + V-ing' hoặc 'cannot help but + V-inf'.", "Do phía sau dùng động từ nguyên mẫu 'feel' nên bắt buộc phải chọn 'but feel'."] },
+            { id: 76, q: "_______ broken into while we were away on holiday.", o: ["We had our house", "Thieves had our house", "It was our house", "They have"], c: "We had our house", e: ["Nhà chúng tôi đã bị đột nhập trong lúc chúng tôi đi nghỉ lễ.", "Áp dụng cấu trúc cầu khiến / chịu ảnh hưởng thể bị động.", "Công thức: 'have + sth + P2' (cái gì bị làm sao bởi ai).", "Mệnh đề hoàn chỉnh: 'We had our house broken into'."] },
+            { id: 77, q: "Climate change and rising global food prices, which are all people, are at the top of the agenda.", o: ["a cause for concerns to", "of concern to", "alarm bells from", "a cause for alarm at"], c: "of concern to", e: ["Biến đổi khí hậu và giá lương thực tăng, điều mà mọi người lo ngại, nằm ở đầu chương trình nghị sự.", "Cấu trúc tính chất: 'be of concern to sb' = 'worry/concern sb' (là mối bận tâm lo ngại đối với ai).", "A sai vì danh từ concern ở đây thừa chữ 's' và sai mạo từ.", "C và D không tạo thành cụm từ hợp cú pháp mệnh đề quan hệ bổ ngữ."] },
+            { id: 78, q: "I sent the prospectus to you by post weeks ago. It _______ by now.", o: ["should have arrived", "would have arrived", "must have arrived", "is supposed to arrive"], c: "should have arrived", e: ["Tôi đã gửi bản cáo bạch cho bạn bằng đường bưu điện vài tuần trước. Đáng lẽ ra giờ này nó phải đến rồi chứ.", "Dự đoán một việc lẽ ra phải xảy ra dựa trên kỳ vọng hợp lý.", "Cấu trúc: 'should have + P2' (đáng lẽ ra đã phải làm xong/đến nơi).", "Must have + P2 chỉ sự chắc chắn 100% tìm ra kết luận quá khứ (không khớp sắc thái bưu kiện thất lạc)."] },
+            { id: 79, q: "_______ global solidarity, the world would not be better prepared for the influenza H1N1 pandemic.", o: ["On account of", "Thanks to", "If not", "But for"], c: "But for", e: ["Nếu không có sự đoàn kết toàn cầu, thế giới đã không thể chuẩn bị tốt hơn để đối phó đại dịch H1N1.", "Câu điều kiện loại 3 rút gọn giả định quá khứ dạng phủ định.", "Cấu trúc: 'But for + Cụm danh từ, S + would not have + P2' (Nếu không vì/Nếu không có cái gì).", "Thanks to mang nghĩa nhờ có (ngược nghĩa vế sau phủ định). If not cần một mệnh đề."] },
+            { id: 80, q: "Anti-terrorism forces were _______ full alert during the Olympic Games.", o: ["in", "under", "on", "at"], c: "on", e: ["Các lực lượng chống khủng bốt được đặt trong tình trạng báo động cao độ suốt kỳ Thế vận hội.", "Giới từ đi với trạng thái báo động chiến đấu 'alert'.", "Cụm từ cố định: 'on full alert' hoặc 'on the alert' (trong tư thế cảnh giác cao độ).", "Các giới từ còn lại vi phạm quy tắc collocation."] },
+            { id: 81, q: "The principal will declare the ceremony open as soon as all the graduates and guests _______ .", o: ["will have sat", "have been seated", "will be sitting", "have seated"], c: "have been seated", e: ["Hiệu trưởng sẽ tuyên bố khai mạc buổi lễ ngay khi tất cả các học sinh tốt nghiệp và khách mời ổn định chỗ ngồi.", "Hòa hợp thì: Sau 'as soon as' không dùng thì tương lai chứa 'will'.", "Hành động 'seat' mang nghĩa xếp chỗ, người tham dự được xếp chỗ ngồi ổn định (bị động).", "Công thức hiện tại hoàn thành bị động: 'have been seated'."] },
+            { id: 82, q: "The mini dress _______ , but now it is making a comeback.", o: ["was once a fad thought to be finished", "was once thought to be a finished fad", "was a fad once thought to be finished", "was a fad thought to be once finished"], c: "was a fad once thought to be finished", e: ["Váy ngắn từng là một mốt thời trang từng có thời được nghĩ là đã kết thúc, nhưng nay đang trở lại.", "Trật tự sắp xếp mệnh đề quan hệ rút gọn bổ nghĩa danh từ.", "'was a fad' (đã từng là mốt) + cụm trạng từ phân từ rút gọn 'once thought to be finished'.", "Các phương án khác sắp xếp từ đảo lộn gây sai nghĩa cấu từ."] },
+            { id: 83, q: "Pete: 'What do you usually do on Sunday night?' - Margaret: '_______ time I go out with my friends'.", o: ["Most", "The most", "The most of", "Most of the"], c: "Most of the", e: ["Pete: 'Cậu thường làm gì vào tối Chủ nhật?' - Margaret: 'Phần lớn thời gian tớ đi chơi với bạn.'", "Cụm từ chỉ lượng thời gian tần suất.", "Cấu trúc cố định: 'Most of the time' nghĩa là hầu hết thời gian, đa số trường hợp.", "Most không đi trực tiếp với danh từ cụ thể mà thiếu 'of the' trong ngữ cảnh này."] },
+            { id: 84, q: "_______ different in character we are, we have been mutual friends since our childhood.", o: ["However", "Despite being", "Although", "Whatever"], c: "However", e: ["Dù cho tính cách chúng tôi có khác biệt thế nào, chúng tôi vẫn là bạn thân từ nhỏ.", "Cấu trúc nhượng bộ đặc biệt với tính từ đứng đầu vế.", "Công thức: 'However + Adj + S + be, mệnh đề' (Dù có như thế nào đi nữa).", "Although và Despite không đảo tính từ 'different' lên trước chủ ngữ."] },
+            { id: 85, q: "'How was your visit to the dentist?' - 'It was painless. I _______ worried'.", o: ["mustn’t have", "needn’t have", "didn’t need to be", "wouldn’t have"], c: "needn’t have", e: ["'Chuyến đi khám răng thế nào?' - 'Không đau chút nào. Đáng lẽ ra tớ không cần phải lo lắng quá.'", "Diễn tả hành động thực tế đã làm trong quá khứ nhưng việc đó là vô ích, không cần thiết.", "Cấu trúc: 'needn't have + P2' (Đáng lẽ không cần làm - nhưng thực tế người nói đã lo lắng trước đó).", "Didn't need to V chỉ một việc không cần làm và thực tế có thể đã không làm."] },
+            { id: 86, q: "_______ in Paris before, he didn’t know his way around when he took his family there.", o: ["Not be living", "Never having lived", "His not living", "Because he has lived"], c: "Never having lived", e: ["Vì chưa từng sống ở Paris trước đây, anh ta không biết đường xá khi dẫn gia đình tới đó.", "Rút gọn mệnh đề trạng ngữ chỉ nguyên nhân, hành động xảy ra trước hành động quá khứ chính.", "Công thức phân từ hoàn thành: 'Never/Not + having + P2'.", "A sai dạng động từ. D sai thì hiện tại hoàn thành không tương thích với quá khứ vế sau."] },
+            { id: 87, q: "Of the ten beauty spots my brother visited, _______ left a lasting impression on him.", o: ["none of which", "not one of them", "which none", "and none of them"], c: "not one of them", e: ["Trong số 10 danh lam thắng cảnh anh tôi đã đi, không một nơi nào để lại ấn tượng sâu đậm.", "Do câu được ngăn cách độc lập bằng dấu phẩy và vị ngữ phía sau chia động từ số ít 'left'.", "'not one of them' đóng vai trò chủ ngữ đại từ đại diện cho câu chính.", "Dùng 'none of which' chỉ khi vế sau bổ trợ mệnh đề phụ thuộc trực tiếp liên từ quan hệ."] },
+            { id: 88, q: "_______ show lasts three hours.", o: ["All the", "The whole", "Most", "Entire"], c: "The whole", e: ["Toàn bộ buổi biểu diễn kéo dài 3 tiếng.", "Dựa vào danh từ số ít 'show' và động từ chia số ít 'lasts'.", "Cấu trúc: 'The whole + Danh từ số ít' (Toàn bộ cái gì).", "All the đi với danh từ số nhiều. Entire đứng một mình thiếu mạo từ 'The' đứng trước."] },
+            { id: 89, q: "_______ that you should drink at least eight glasses of water a day.", o: ["Based on medical evidence, it suggests", "The medical evidence we suggest", "Medically, we suggest evidence", "There is no medical evidence to suggest"], c: "There is no medical evidence to suggest", e: ["Không có bằng chứng y tế nào cho thấy bạn phải uống ít nhất 8 cốc nước mỗi ngày.", "Cấu trúc câu giới thiệu thông tin khoa học khách quan.", "Mẫu câu: 'There is no evidence to suggest that + mệnh đề' (Không có bằng chứng nào chỉ ra rằng...).", "Các phương án khác vi phạm lỗi chủ ngữ giả hoặc đảo từ sai logic."] },
+            { id: 90, q: "'It’s beautiful here!' - 'I just wish we _______ a camera with us'.", o: ["brought", "would bring", "had brought", "were bringing"], c: "had brought", e: ["'Ở đây đẹp quá!' - 'Tớ chỉ ước chúng ta đã mang theo máy ảnh.'", "Câu ước diễn tả sự tiếc nuối về một việc không làm trong quá khứ (thực tế lúc đi đã không mang).", "Cấu trúc câu ước loại 3 (trái quá khứ): 'S + wish + S + had + P2'.", "Do đó chọn 'had brought'."] },
+            { id: 91, q: "Every member in Nataly's class admires her _______ .", o: ["honesty", "dishonest", "dishonesty", "honest"], c: "honesty", e: ["Mọi thành viên trong lớp đều ngưỡng mộ sự trung thực của Nataly.", "Vị trí trống nằm sau tính từ sở hữu 'her' nên cần một DANH TỪ.", "Ngữ cảnh khen ngợi ngưỡng mộ nên chọn danh từ tích cực: 'honesty' (sự thành thật).", "Dishonesty là sự gian lận, dối trá. Honest là tính từ."] },
+            { id: 92, q: "John never comes to class on time and _______ .", o: ["neither does Peter", "so does Peter", "so doesn't Peter", "neither doesn't Peter"], c: "neither does Peter", e: ["John không bao giờ đến lớp đúng giờ và Peter cũng vậy.", "Câu đồng tình phủ định (do có từ phủ định 'never' ở vế trước).", "Công thức đồng tình phủ định: 'and + neither + trợ động từ khẳng định + S'.", "Do động từ vế trước là 'comes' (hiện tại đơn) nên mượn trợ động từ 'does' $\rightarrow$ 'neither does Peter'."] },
+            { id: 93, q: "If I were in charge, I _______ things differently.", o: ["will do", "would do", "would have done", "had done"], c: "would do", e: ["Nếu tôi là người quản lý điều hành, tôi sẽ làm mọi thứ khác đi.", "Nhận diện câu điều kiện loại 2 qua động từ vế If là 'were' (giả định hiện tại).", "Công thức vế kết quả loại 2: 'S + would/could + V-inf'.", "Do đó chọn đáp án 'would do'."] },
+            { id: 94, q: "The population of the earth is increasing at a tremendous rate and _______ out of control.", o: ["are soon going to be", "soon will be", "they have become", "why it will be"], c: "soon will be", e: ["Dân số thế giới đang tăng với tốc độ chóng mặt và sẽ sớm vượt khỏi tầm kiểm soát.", "Động từ vế sau bổ nghĩa nối tiếp song song cho chủ ngữ số ít số lượng 'The population'.", "Cấu từ phù hợp dòng thời gian dự đoán tương lai: 'soon will be'.", "Are dùng số nhiều là sai. They làm thừa đại từ chủ ngữ."] },
+            { id: 95, q: "Janet has left home and is _______ of her parents.", o: ["dependent", "dependently", "independent", "of parent"], c: "independent", e: ["Janet đã rời khỏi nhà và sống tự lập, không phụ thuộc vào bố mẹ.", "Vị trí sau hệ động từ 'is' cần một TÍNH TỪ.", "Cấu trúc đi với giới từ 'of': 'be independent of sb' (độc lập, tự lập khỏi ai).", "Dependent đi với giới từ 'on' (phụ thuộc vào ai)."] },
+            { id: 96, q: "When I last _______ Jane, she _______ to find a job.", o: ["saw / was trying", "saw / tried", "have seen / tried", "see / is trying"], c: "saw / was trying", e: ["Khi tôi nhìn thấy Jane lần cuối, cô ấy đang cố gắng tìm kiếm một công việc.", "Phối hợp thì quá khứ: Một hành động đang diễn ra hành vi kéo dài, có hành động khác xen ngang.", "Hành động xen ngang chia Quá khứ đơn ('saw'), hành động nền chia Quá khứ tiếp diễn ('was trying').", "Trạng từ 'last' chỉ mốc mốc điểm quá khứ đơn."] },
+            { id: 97, q: "_______ he did not attend the English class, he knew the lesson quite well.", o: ["In spite of", "However", "Although", "Despite"], c: "Although", e: ["Mặc dù anh ấy không tham gia lớp học tiếng Anh, anh ấy vẫn hiểu bài rất rõ.", "Cần một liên từ chỉ sự nhượng bộ đứng trước một MỆNH ĐỀ hoàn chỉnh.", "Cấu trúc: 'Although + mệnh đề'.", "In spite of và Despite yêu cầu theo sau là cụm danh từ/V-ing. However cần dấu phẩy ngăn cách."] },
+            { id: 98, q: "He is going to get married _______ the end of this month.", o: ["on", "in", "to", "at"], c: "at", e: ["Anh ấy sẽ kết hôn vào cuối tháng này.", "Cụm giới từ chỉ thời điểm mốc cố định thời gian.", "Cấu trúc cụm từ bất biến: 'at the end of + thời gian/địa điểm' (vào thời điểm cuối của cái gì).", "Phân biệt với 'in the end' mang nghĩa là cuối cùng, kết cục lại."] },
+            { id: 99, q: "The air is not as pure as it _______ .", o: ["used to be", "is used to be", "is used to being", "was used to be"], c: "used to be", e: ["Không khí hiện nay không còn trong lành như nó đã từng trước đây nữa.", "Cấu trúc chỉ một trạng thái, thói quen đã từng có trong quá khứ nay không còn nữa.", "Công thức: 'S + used to + V-inf'. Trạng thái với tobe $\rightarrow$ 'used to be'.", "Be used to V-ing mang nghĩa quen với việc gì ở hiện tại (sai bối cảnh)."] },
+            { id: 100, q: "After a meal in a restaurant, you ask the waiter for the _______ .", o: ["receipt", "cheque", "prescription", "bill"], c: "bill", e: ["Sau bữa ăn ở nhà hàng, bạn yêu cầu bồi bàn đưa hóa đơn tính tiền.", "Từ vựng bối cảnh ăn uống dịch vụ.", "'bill' là hóa đơn kê khai số tiền cần thanh toán sau khi ăn xong.", "Receipt là biên lai xác nhận đã trả tiền xong. Prescription là đơn thuốc bác sĩ."] }
+        ];
+
+        let log = {};
+        function render() {
+            const container = document.getElementById('quiz-box');
+            container.innerHTML = '';
+            quizData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'card-item';
+                card.id = `card-${item.id}`;
+                card.innerHTML = `
+                    <div class="card-title"><span class="card-index">${index + 51}</span>${item.q}</div>
+                    <div class="options-box">
+                        ${item.o.map(opt => `<button class="option-node" onclick="check(${item.id}, '${opt}', this)">${opt}</button>`).join('')}
+                    </div>
+                    <div class="exp-container" id="exp-${item.id}">
+                        <div style="font-weight:900;color:#15803D;margin-bottom:5px;">💡 GIẢI THÍCH CHI TIẾT CỦA MS LÊ HẰNG:</div>
+                        <div class="exp-row"><strong>1. Dịch nghĩa:</strong> ${item.e[0]}</div>
+                        <div class="exp-row"><strong>2. Từ vựng:</strong> ${item.e[1]}</div>
+                        <div class="exp-row"><strong>3. Bản chất ngữ pháp:</strong> ${item.e[2]}</div>
+                        <div class="exp-row"><strong>4. Loại trừ:</strong> ${item.e[3]}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        let audioCtx = null;
+        function playTone(type) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            if (type === 'good') {
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else {
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        function check(id, selected, btn) {
+            const item = quizData.find(x => x.id === id);
+            const box = btn.parentElement;
+            box.querySelectorAll('.option-node').forEach(b => b.classList.add('locked'));
+            
+            if (selected === item.c) {
+                btn.classList.add('correct-state'); playTone('good'); triggerFx();
+                log[id] = true;
+            } else {
+                btn.classList.add('wrong-state'); playTone('bad');
+                log[id] = false;
+                box.querySelectorAll('.option-node').forEach(b => {
+                    if (b.innerText === item.c) b.classList.add('correct-state');
+                });
+            }
+            document.getElementById(`exp-${id}`).classList.add('active');
+            document.getElementById('bar-fill').style.width = `${(Object.keys(log).length / quizData.length) * 100}%`;
+        }
+
+        function showScore() {
+            if (Object.keys(log).length < quizData.length) {
+                alert("Con yêu ơi, con chưa làm hết các câu kìa! Hãy hoàn thành trọn vẹn cả 50 câu rồi nộp bài nha!"); return;
+            }
+            let score = Object.values(log).filter(x => x === true).length;
+            alert(`Chúc mừng con đã hoàn thành bài thi! 🎉\nKết quả: ${score}/${quizData.length} câu đúng! Hãy ghi lại những cấu trúc hay vào vở nhé con!`);
+        }
+
+        const cv = document.getElementById('confetti-canvas'); const ctx = cv.getContext('2d'); let fx = [];
+        function resize() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        function triggerFx() {
+            for (let i = 0; i < 30; i++) {
+                fx.push({ x: Math.random() * cv.width, y: -10, r: Math.random() * 6 + 4, c: ['#8E44AD','#F1C40F','#1ABC9C','#E74C3C'][Math.floor(Math.random()*4)], vx: Math.random()*4-2, vy: Math.random()*3+3 });
+            }
+        }
+        function loop() {
+            ctx.clearRect(0,0,cv.width,cv.height);
+            fx.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy; ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+                if (p.y > cv.height) fx.splice(i, 1);
+            });
+            requestAnimationFrame(loop);
+        }
+        loop(); render();
+    </script>
+</body>
+</html>
